@@ -1,0 +1,35 @@
+- name: Install package needed to use kubernetes
+  tags: apt-transport-https, ca-certificates, curl, gdp
+  package:
+    name:
+      - "{{ apt_transport_https_package }}"
+      - ca-certificates
+      - curl
+      - "{{ gpg_package }}"
+    state: lastest
+
+- name: Install dnf-utils
+  tags: dnf-utils, centos
+  dnf:
+    name:
+      - dnf-utils
+    state: lastest
+  when: ansible_distribution == "CentOS"
+
+- name: Disable Swap Space (Ubuntu)
+  tags: swapoff, ubuntu
+  shell: swapoff -a
+  when: ansible_distribution == "Ubuntu"
+
+- name: Disable Swap Space (CentOS)
+  tags: swapoff, centos9
+  shell: systemctl hibernate
+  when: ansible_distribution == "CentOS"
+
+- name: Echo free Space
+  tags: free
+  shell: free -h
+  register: free_output
+
+- name: Display free Space
+  debug: free_output.stdout

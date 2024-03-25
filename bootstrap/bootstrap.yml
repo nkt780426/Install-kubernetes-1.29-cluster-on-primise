@@ -1,0 +1,51 @@
+---
+
+- hosts: all
+  become: true
+  pre_tasks:
+
+  - name: install updates (CentOS)
+    tags: always
+    dnf:
+      update_only: yes
+      update_cache: yes
+    when: ansible_distribution == "CentOS"
+
+  - name: install updates (Ubuntu)
+    tags: always
+    apt:
+      update_cache: yes
+      upgrade: dist
+    when: ansible_distribution in ["Ubuntu", "Debian"]
+
+  - name: Set Timezone to Asia/Ho_Chi_Minh
+    tags: timezone
+    ansible.builtin.command:
+      cmd: timedatectl set-timezone Asia/Ho_Chi_Minh
+
+# Thay tất cả sullyvan bằng tên của bạn trong đoạn code dưới đây
+- hosts: all
+  become: true
+  tasks:
+
+  - name: create sullyvan user
+    tags: always
+    user:
+      name: sullyvan
+      groups: root
+    
+  - name: add ssh key for simone
+    tags: always
+    authorized_key:
+      user: sullyvan
+      # Thay public key mà bạn đã tạo ra nhờ myscript.sh vào đây
+      key: "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAILbfT8ypW4j2fHGPOuOjnaz4/4d/HkqfnAGDZDjPnrlt ansible"
+
+  - name: add sudoers file for sullyvan
+    tags: always
+    copy:
+      src: sudoer_sullyvan
+      dest: /etc/sudoers.d/sullyvan
+      owner: root
+      group: root
+      mode: 0440

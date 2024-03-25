@@ -1,0 +1,4 @@
+apt_transport_https_package: apt-transport-https
+gpg_package: gdp
+
+host_name: k8s-worker-1.htp.local

@@ -1,0 +1,5 @@
+# k8s cluster node
+192.168.1.21  k8s-master.htp.local  k8s-master
+192.168.1.22  k8s-worker-1.htp.local  k8s-worker-1
+192.168.1.23  k8s-worker-2.htp.local  k8s-worker-2
+192.168.1.24  k8s-worker-3.htp.local  k8s-worker-3

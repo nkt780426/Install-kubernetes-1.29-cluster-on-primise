@@ -1,0 +1,18 @@
+- name: Set hostname
+  tags: hostname
+  hostname:
+    name:
+      - "{{ host_name }}"
+
+- name: Check if k8s_host entry already exits in /etc/hosts
+  tags: k8s, host
+  shell: grep -qxF "{{ k8s_host_content }}" /etc/hosts
+  ignore_errors: true
+  register: grep_result
+
+- name: Add k8s_host entry to /etc/hosts if not exists
+  lineinfile:
+    path: /etc/hosts
+    line: "{{ k8s_host_content }}"
+    insertafter: EOF
+  when: grep_result.rc != 0
