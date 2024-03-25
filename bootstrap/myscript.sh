@@ -28,30 +28,32 @@ if [ -s "inventory.ini" ]; then
         # Kiểm tra mã trả về của lệnh sshpass
         if [ $? -eq 0 ]; then
             echo "Successfully added SSH key to $host"
-
-            # Loại bỏ phần mở rộng .pub từ đường dẫn public key
-            private_key="${public_key%.pub}"
-
-            # Tạo alias mới
-            new_alias="alias ssha='eval \$(ssh-agent) && ssh-add $private_key'"
-            
-            # Kiểm tra xem alias đã tồn tại trong .bashrc chưa
-            if ! grep -q "$new_alias" "$bashrc_file"; then
-                # Nếu alias chưa tồn tại, thêm nó vào .bashrc
-                echo "# Adding alias to .bashrc"
-                echo "$new_alias" >> "$bashrc_file"
-                echo "Alias 'ssha' has been added to .bashrc"
-            else
-                # Nếu alias đã tồn tại, thông báo ra màn hình
-                echo "Alias 'ssha' already exists in .bashrc"
-            fi
-
-            echo -e "\U1F44F \U1F44F \U1F44F Run sucessfully! \U1F44F \U1F44F \U1F44Fs"
         else
             echo "Failed to add SSH key to $host"
         fi
     done < "inventory.ini"
 else
     echo "inventory.ini doesn't exit or empty."
+    exit 1
 fi
+
+echo "----------------------------------------------------"
+
+# Loại bỏ phần mở rộng .pub từ đường dẫn public key
+private_key="${public_key%.pub}"
+
+# Tạo alias mới
+new_alias="alias ssha='eval \$(ssh-agent) && ssh-add $private_key'"
+
+# Kiểm tra xem alias đã tồn tại trong .bashrc chưa
+if ! grep -q "$new_alias" "$bashrc_file"; then
+    # Nếu alias chưa tồn tại, thêm nó vào .bashrc
+    echo "# Adding alias to .bashrc"
+    echo "$new_alias" >> "$bashrc_file"
+    echo "Alias 'ssha' has been added to .bashrc"
+else
+    # Nếu alias đã tồn tại, thông báo ra màn hình
+    echo "Alias 'ssha' already exists in .bashrc"
+fi
+echo -e "\U1F44F \U1F44F \U1F44F Run sucessfully! \U1F44F \U1F44F \U1F44Fs"
 echo "-----------------------end--------------------------"
