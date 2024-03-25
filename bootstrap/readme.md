@@ -16,6 +16,7 @@ ssh-keygen -t ed25519 -C "<cái gì đó>"
 ```
 3. Chạy myscript.sh
 - Sửa file inventory.ini thay bằng các địa chỉ ip của các máy bạn muốn tạo cụm k8s
+- Sửa biến bashrc_file trong đoạn script thành đường dẫn đến file .bashrc của user mà bạn chyaj script và playbook
 - Chạy script và làm theo hướng dẫn
 ```bash
 sudo chmod +x myscript.sh

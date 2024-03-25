@@ -39,6 +39,9 @@ fi
 
 echo "----------------------------------------------------"
 
+# Thay đường dẫn cho đúng với user của bạn
+bashrc_file="/home/vohoang/.bashrc"
+
 # Loại bỏ phần mở rộng .pub từ đường dẫn public key
 private_key="${public_key%.pub}"
 
