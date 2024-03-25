@@ -30,8 +30,10 @@ ansible all -m ping
 5. Chạy bootstrap.yml playbook
 - Tìm trong file bootstrap.yml và thay tất cả từ sullyvan (đây là tên tôi) thành tên của bạn
 - Sửa tên file files/sudoer_sullyvan thành files/sudoer_<tên bạn>
+- Ở task cuối cùng của file "Create alias ssha for workstation if it does not exist", sửa đường dẫn đến ssh private key của bạn
 - **Quan trọng: thay ssh public key của bạn vừa mới tạo bằng đoạn script myscript.sh.**
 ```bash
 ansible-playbook bootstrap.yml --ask-become-pass
 ```
 *Đây là đoạn script bootstrap, chỉ dùng để chạy 1 lần khi bạn mới tiếp xức với hệ thống, không chạy nhiều lần*
+*Từ bây giờ trở đi, mỗi khi bắt đầu 1 phiên làm việc (terminal) nhấn ssha để thêm khóa private key vào ssh-agent*
