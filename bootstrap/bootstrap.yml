@@ -34,7 +34,7 @@
       name: sullyvan
       groups: root
     
-  - name: add ssh key for simone
+  - name: add ssh key for sullyvan
     tags: always
     authorized_key:
       user: sullyvan
