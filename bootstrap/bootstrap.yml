@@ -49,17 +49,3 @@
       owner: root
       group: root
       mode: 0440
-  
-  - name: Check if alias ssha already exists in .bashrc
-    shell: grep -q "alias ssha=" /home/sullyvan/.bashrc
-    register: alias_check
-    ignore_errors: true
-
-  - name: Create alias ssha for workstation if it does not exist
-    tags: alias, ssha
-    lineinfile:
-      path: /home/sullyvan/.bashrc
-      insertafter: EOF
-      line: "alias ssha='eval $(ssh-agent) && ssh-add ~/.ssh/ansible'"
-    when: alias_check.rc != 0
-        
