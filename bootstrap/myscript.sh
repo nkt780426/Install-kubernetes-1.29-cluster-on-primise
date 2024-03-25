@@ -61,5 +61,5 @@ fi
 
 source ~/.bashrc
 
-echo -e "\U1F44F \U1F44F \U1F44F Run sucessfully! \U1F44F \U1F44F \U1F44Fs"
+echo -e "\U1F44F \U1F44F \U1F44F Run sucessfully! \U1F44F \U1F44F \U1F44F"
 echo "-----------------------end--------------------------"

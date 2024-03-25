@@ -1,12 +1,13 @@
 # Điều kiện tiên quyết
-- Cần 1 máy ubuntu làm workstation (Là máy cá nhân không liên quan đến hệ thống của công ty hoặc máy nằm trong hệ thống công ty đều được)
-- Kết nối máy này đến mạng lan chứa cụm k8s định cài
-- Các host định cài phải có chung username/password, nếu không có tự biên tự diễn đoạn myscript.sh (sử dụng tài khoản root và cài mật khẩu chung tất cả các host cho chắc)
-# Mục đích của folder bootstrap
-- Dùng để khởi tạo những thứ cơ bản nhất lên các máy như kết nối ansible đến các host từ workstation (thêm public key của workstation vào các host), thêm username chứa tên của system admin đến các host, set timezone cho các host, ...
+- Cần 1 máy Ubuntu làm workstation (Là máy cá nhân không liên quan đến hệ thống của công ty hoặc máy nằm trong hệ thống công ty đều được)
+- Kết nối máy này đến mạng LAN chứa cụm K8s định cài
+- Các host định cài phải có chung username/password, nếu không có tự biên tự diễn đoạn `myscript.sh` (sử dụng tài khoản root và cài mật khẩu chung tất cả các host cho chắc)
+
+# Mục đích của thư mục `bootstrap`
+- Dùng để khởi tạo những thứ cơ bản nhất lên các máy như kết nối Ansible đến các host từ workstation (thêm public key của workstation vào các host), thêm username chứa tên của system admin đến các host, set timezone cho các host, ...
 - Chỉ dùng chạy 1 lần duy nhất khi mới bắt đầu làm việc với hệ thống (bootstrap)
 # Các bước build bootstrap
-1. Ping đến các host bằng tay lần đầu tiên
+1. Ping đến các host bằng tay lần đầu tiên (hình như không cần cũng được nhưng lúc nhảy bước 2 vẫn phải làm)
 ```bash
 ssh <tên_user_của_host>@<địa_chỉ_ip_host>
 ```
@@ -16,7 +17,7 @@ ssh-keygen -t ed25519 -C "<cái gì đó>"
 ```
 3. Chạy myscript.sh
 - Sửa file inventory.ini thay bằng các địa chỉ ip của các máy bạn muốn tạo cụm k8s
-- Sửa biến bashrc_file trong đoạn script thành đường dẫn đến file .bashrc của user mà bạn chyaj script và playbook
+- Sửa biến bashrc_file trong đoạn script thành đường dẫn đến file .bashrc của user mà bạn chạy script và playbook
 - Chạy script và làm theo hướng dẫn
 ```bash
 sudo chmod +x myscript.sh
