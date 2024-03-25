@@ -10,20 +10,24 @@
 ```bash
 ssh <tên_user_của_host>@<địa_chỉ_ip_host>
 ```
-2. Chạy myscript.sh
+2. Tự tạo ssh key của riêng mình
+```bash
+ssh-keygen -t ed25519 -C "<cái gì đó>"
+```
+3. Chạy myscript.sh
 - Sửa file inventory.ini thay bằng các địa chỉ ip của các máy bạn muốn tạo cụm k8s
-- Chạy script và làm theo hướng dẫn (Khi chạy hãy nhớ nơi lưu ssh key của bạn đã tạo bằng đoạn script này)
+- Chạy script và làm theo hướng dẫn
 ```bash
 sudo chmod +x myscript.sh
 ./myscript.sh
 ```
-3. Chỉnh file ansible.cfg
+4. Chỉnh file ansible.cfg
 - Thay đường dẫn đến private key mà myscript.sh ở trên đã tạo ra vào file ansible.cfg
 - Kiểm tra đã cài thành công ansible chưa
 ```bash
 ansible all -m ping
 ```
-4. Chạy bootstrap.yml playbook
+5. Chạy bootstrap.yml playbook
 - Tìm trong file bootstrap.yml và thay tất cả từ sullyvan (đây là tên tôi) thành tên của bạn
 - Sửa tên file files/sudoer_sullyvan thành files/sudoer_<tên bạn>
 - **Quan trọng: thay ssh public key của bạn vừa mới tạo bằng đoạn script myscript.sh.**
