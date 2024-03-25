@@ -53,6 +53,7 @@
   - name: Check if alias ssha already exists in .bashrc
     shell: grep -q "alias ssha=" /home/sullyvan/.bashrc
     register: alias_check
+    ignore_errors: true
 
   - name: Create alias ssha for workstation if it does not exist
     tags: alias, ssha
