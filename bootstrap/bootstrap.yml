@@ -39,7 +39,7 @@
     authorized_key:
       user: sullyvan
       # Thay public key mà bạn đã tạo ra nhờ myscript.sh vào đây
-      key: "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIGibgJsPLe6clgZNIzGlcilOX7qqzCWd/L7RhEBsO+RF ansible"
+      key: "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAILbfT8ypW4j2fHGPOuOjnaz4/4d/HkqfnAGDZDjPnrlt ansible"
 
   - name: add sudoers file for sullyvan
     tags: always

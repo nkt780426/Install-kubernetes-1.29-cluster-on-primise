@@ -1,6 +1,7 @@
 # Nguồn thực hiện (ngày 25/3/2024)
 https://kubernetes.io/docs/setup/production-environment/container-runtimes/
-# Tại sao cần cài container runtime ?
+# Lý thuyết
+## Tại sao cần cài container runtime ?
 - Từ phiên bản k8s 1.24, Dockershim-container runtime mặc định của các phiên bản trước đó, đã bị bỏ do 1 số vấn đề lo ngại về bảo mật (là 1 tiến trình daemon yêu cầu quyền root). Vốn dĩ dockershim được thiết kế như 1 phiên bản container runtime tạm thời cho k8s từ lúc nó mới ra mắt, k8s phất triển => bỏ
 - Thay vào đó K8s cung cấp 1 template (Container Runtime Interface - CRI) trên github, các hãng sản xuất container runtime muốn sản phẩm của mình được sử dụng trên k8s chỉ cần đáp ứng CRI là có thể chạy được trên k8s
 Đây là cách k8s vừa có thể là open source nhưng cũng có thể đáp ứng được môi trường enterprise
@@ -9,7 +10,7 @@ https://kubernetes.io/docs/setup/production-environment/container-runtimes/
     - CRI-O: Đứng thứ 2 chỉ sau containerd về độ phổ biến. Được thiết kế tối ưu hóa hiệu suất và bảo mật (chạy container không cần quá nhiều tính năng không cần thiết, giúp giảm bớt kích thước và overhead do với Docker Engine). Nhước điểm, không phải free, thiếu nhiều tính năng tiện ích có sẵn trong Docker Engine, đặc biệt là liên quan đến mornitoring
     - Docker Engine: là Docker bình thường hiển nhiên phổ biến nhất nếu ko tính đến trong k8s. Nhược điểm, tốn nhiều tài nguyên hơn so với các thằng trên, là tiến trình daemon yêu cầu quyền root, đổi lại do cộng đồng sử dụng lớn lên nó có rất nhiều plugin
     - Mirantis Container Runtime: là 1 phiên bản tinh chỉnh của Docker Engine, được tối ưu hóa cho việc triển khai và quản lý trong các môi trường production. Do là sản phẩm mới nên không có nhiều thông tin về nhược điểm
-# Cgroup drivers
+## Cgroup drivers
 - Control groups (Cgroup) là 1 tính năng trong hệ điều hành linux, được sử dụng để quản lý và giới hạn tài nguyên của các tiến trình, nhóm tiến trình trong hệ thống (limit CPUS, memory, brandwidth, ...) 
     - Cgroup v1 (legacy): là phiên bản cầu tiên cung cấp khả năng quản lý tài nguyên cơ bản như CPU, mem, I/O
     - Cgroup v2: cải thiện, mở rộng khả năng quản lý (sử dụng namespace) và bảo mật hơn
@@ -21,3 +22,14 @@ https://kubernetes.io/docs/setup/production-environment/container-runtimes/
 Tóm lại, đây chỉ là thông tin đọc thêm hữu ích, chỉ cần follow [document](https://kubernetes.io/docs/setup/production-environment/container-runtimes/) để cài container runtime mong muốn là đáp ứng được yêu cầu này 
 **Role này dùng để cài containerd lên các hosts, nếu thay đổi đọc lại document**
 **BIG NOTE: việc thay đổi cgroup của 1 node đã join vào k8s cluster là việc không nên. Lý do, nếu Node này đã tạo Pod trên 1 cgroup nào đó thì việc này dẫn đến error, re-create lại Pod cũng không giải quyết được vấn đề khể cả restart lại kubelet. Giải pháp duy nhất là thay thế node này bằng 1 node khác đã update config, tham khảo tại [Migrating to the systemd driver in kubeadm managed clusters](https://kubernetes.io/docs/tasks/administer-cluster/kubeadm/configure-cgroup-driver/)**
+# Mục đích role
+1.Cài containerd lên tất cả các host (có thể cải biến để cài các loại container runtime khác) phục vụ cho cài kubelet và kubeadm.
+2.Role chạy được trên Ubuntu và CentOS cùng lúc và các phiên bản Debian/Red Hat theo document chính thức của kubenetes
+# Nhược điểm:
+Có thể outdate khi các phiên bản mới hơn cập nhật (hiển nhiên). Giải pháp
+- Theo dõi trang web của [hãng](https://kubernetes.io/docs/setup/production-environment/container-runtimes/) và update lại version trong thư mục vas
+- Tại bước cấu hình file /etc/containerd/config.toml, đầu tiên chạy playbook chứa role này lần 1, truy cập vào 1 host thực hiện xóa file đó đi và chạy lệnh
+```bash
+containerd config default > /etc/containerd/config.toml
+```
+- Thực hiện các thay đổi file /etc/containerd/config.toml vừa tạo ra theo tài liệu chính thức của [kubernetes](https://kubernetes.io/docs/setup/production-environment/container-runtimes/) tại mục Container runtimes/containerd. Override file vừa tạo vào thư mục /files/config.toml của role và chạy lại playbook

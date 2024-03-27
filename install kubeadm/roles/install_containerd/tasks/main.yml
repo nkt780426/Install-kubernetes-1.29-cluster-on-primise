@@ -1,0 +1,147 @@
+---
+# Forwarding IPv4 and letting iptables see bridged traffic
+# Module copy chỉ tạo file 1 lần do đó chạy nhiều lần playbook không ảnh hưởng
+- name: Load required kernel modules
+  ansible.builtin.copy:
+    src: k8s_module.conf
+    dest: /etc/modules-load.d/k8s.conf
+    owner: root
+    group: root
+    mode: '0644'
+  notify: Load Kernel Modules
+
+- name: Apply sysctl settings
+  ansible.builtin.copy:
+    src: k8s_systemd.conf
+    dest: /etc/sysctl.d/k8s.conf
+    owner: root
+    group: root
+    mode: '0644'
+  notify: Apply Sysctl Settings
+
+# Step 1: Installing containerd
+- name: Install package needed
+  ansible.builtin.package:
+    name:
+      - wget
+      - tar
+    state: present
+
+# Module get_url chỉ download file nếu dest đã tồn tại do force = false theo mặc định
+- name: Download containerd file
+  ansible.builtin.get_url:
+    url: "https://github.com/containerd/containerd/releases/download/v{{ containerd_version }}/containerd-{{ containerd_version }}-{{ containerd_os }}-{{ containerd_arch }}.tar.gz"
+    dest: "{{ containerd_download_dir }}/containerd-{{ containerd_version }}-{{ containerd_os }}-{{ containerd_arch }}.tar.gz"
+    checksum: "{{ containerd_checksum }}"
+
+# Module command: creates, cmd, chdir (chuyển đến thưc mục này trước khi chạy command)
+- name: Extract "containerd-{{ containerd_version }}-{{ containerd_os }}-{{ containerd_arch }}.tar.gz" to /usr/local
+  ansible.builtin.command:
+    cmd: "tar Cxzvf {{ containerd_dir }} containerd-{{ containerd_version }}-{{ containerd_os }}-{{ containerd_arch }}.tar.gz"
+    chdir: "{{containerd_download_dir }}"
+    # khi chạy playbook thứ 2 nó sẽ thực hiện lại thao tác giải nén, càn chỉ định nó nếu tệp đã tồn tại thì không cần giải nén nữa
+    creates: "{{ containerd_dir }}/bin/containerd"
+
+# Xác định systemd là init system của cgroup của containerd
+# Module file dùng để chắc chắn file/directory đã tồn tại trong hệ thống do get_url không tải xuống dest không tồn tại
+- name: Ensure "{{ containerd_systemd }}" directory exit
+  ansible.builtin.file:
+    path: "{{ containerd_systemd }}"
+    state: directory
+    owner: root
+    group: root
+    mode: '0644'
+
+# Do là file nhị phân nên mode là 0755
+- name: Download containerd.service file to start systemd cgroup driver
+  ansible.builtin.get_url:
+    url: "https://raw.githubusercontent.com/containerd/containerd/main/containerd.service"
+    dest: "/usr/local/lib/systemd/system/containerd.service"
+    mode: '0755'
+
+# Sử dụng module lineinfile để thao tác với nội dung của file
+- name: Ensure add PATH='/usr/local/bin' in /etc/environment
+  ansible.builtin.lineinfile:
+    path: /etc/environment
+    line: 'PATH="/usr/local/bin:/usr/bin:/bin:/usr/local/sbin:/usr/sbin:/sbin"'
+    # regexp luôn được kết hợp với insertbefore/insertafter/state=present(default)
+    # Nếu không tìm thấy sẽ dựa vào insertbefore/insertafter để xác định thêm vào đầu hay cuối tệp, nếu thấy thì không sử dụng kết quả trường này
+    # Theo mặc định insertafter được set thay vì insertbefore nên nếu không tìm thấy line được thêm vào cuois tệp
+    regexp: '^PATH='
+  notify: Source /etc/environment
+
+- name: Reload systemd daemon
+  systemd:
+    daemon_reload: true
+
+- name: Ensure containerd service start and enabled
+  ansible.builtin.service:
+    name: containerd
+    enabled: yes
+    state: started
+
+# Step 2: Installing runc
+- name: Download runc file
+  ansible.builtin.get_url:
+    url: "https://github.com/opencontainers/runc/releases/download/v{{ runc_version }}/runc.{{ runc_arch }}"
+    dest: "{{ runc_download_dir }}/run.c.{{ containerd_arch }}"  
+    checksum: "{{ runc_checksum }}"
+
+- name: Copy runc.amd64 to "{{ runc_dir }}"
+  ansible.builtin.copy:
+    src: "{{ runc_download_dir }}/run.c.{{ containerd_arch }}"
+    dest: "{{ runc_dir }}"
+    owner: root
+    group: root
+    mode: "0755"
+    remote_src: true
+
+# Step 3: Installing CNI plugins
+- name: Download CNI plugin
+  ansible.builtin.get_url:
+    url: "https://github.com/containernetworking/plugins/releases/download/v{{ cni_version }}/cni-plugins-{{ cni_os }}-{{ cni_arch }}-v{{ cni_version }}.tgz" 
+    dest: "{{ cni_download_dir }}/cni-plugins-{{ cni_os }}-{{ cni_arch }}-v{{ cni_version }}.tgz"
+    checksum: "{{ cni_checksum }}"
+
+- name: Ensure "{{ cni_dir }} directory exit
+  ansible.builtin.file:
+    path: "{{ cni_dir }}"
+    state: directory
+    owner: root
+    group: root
+    mode: '0644'
+
+- name: Extract "cni-plugins-{{ cni_os }}-{{ cni_arch }}-v{{ cni_version }}.tgz" to {{ cni_dir }}
+  ansible.builtin.command:
+    cmd: "tar Cxzvf {{ cni_dir }} cni-plugins-{{ cni_os }}-{{ cni_arch }}-v{{ cni_version }}.tgz"
+    chdir: "{{cni_download_dir }}"
+    creates: "{{ cni_dir }}/static"
+
+# Create /etc/containerd/config.toml file
+- name: Check if /etc/containerd/config.toml exists
+  ansible.builtin.stat:
+    path: /etc/containerd/config.toml
+  register: config_file
+
+- name: Create "/etc/containerd" directory if it doesn't exist
+  ansible.builtin.file:
+    path: /etc/containerd
+    state: directory
+    owner: root
+    group: root
+    mode: '0644'
+  when: not config_file.stat.exists
+
+- name: Generated default config "/etc/containerd/config.toml"
+  ansible.builtin.shell: |
+    containerd config default > /etc/containerd/config.toml
+  when: not config_file.stat.exists
+
+- name: Copy containerd systemd configuration file to /etc/containerd/config.toml
+  ansible.builtin.copy:
+    src: config.toml
+    dest: /etc/containerd/config.toml
+    owner: root
+    group: root
+    mode: '0644'
+  notify: Reload containerd

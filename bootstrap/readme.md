@@ -7,7 +7,7 @@
 - Dùng để khởi tạo những thứ cơ bản nhất lên các máy như kết nối Ansible đến các host từ workstation (thêm public key của workstation vào các host), thêm username chứa tên của system admin đến các host, set timezone cho các host, ...
 - Chỉ dùng chạy 1 lần duy nhất khi mới bắt đầu làm việc với hệ thống (bootstrap)
 # Các bước build bootstrap
-1. Ping đến các host bằng tay lần đầu tiên (hình như không cần cũng được nhưng lúc nhảy bước 2 vẫn phải làm)
+1. SSH đến các host bằng tay lần đầu tiên
 ```bash
 ssh <tên_user_của_host>@<địa_chỉ_ip_host>
 ```
