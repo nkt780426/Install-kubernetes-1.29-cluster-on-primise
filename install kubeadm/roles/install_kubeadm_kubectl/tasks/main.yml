@@ -1,6 +1,6 @@
 ---
 # Disable swap config
-- name: disable swap config now on all hosts
+- name: Disable swap config now on all hosts
   ansible.builtin.command:
     cmd: "swapoff -a"
 
@@ -10,3 +10,18 @@
     regexp: '^.*swap.*'
     line: "# {{ item }}"
   with_lines: cat /etc/fstab | grep swap
+# Install kubectl
+- name: Install kubectl
+  ansible.builtin.command:
+    cmd: |
+      curl -LO "https://dl.k8s.io/release/v{{ kubectl_version }}/bin/linux/amd64/kubectl"
+    chdir: /tmp
+    
+- name: Install kubectl binary
+  ansible.builtin.copy:
+    src: /tmp
+    dest: "{{ kubectl_dir }}"
+    remote_src: true
+    owner: root
+    group: root
+    mode: '0755'

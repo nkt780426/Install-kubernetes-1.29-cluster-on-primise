@@ -11,3 +11,5 @@ https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/install-ku
 - Là 1 phần của hệ thống quản lý bộ nhớ ảo trong các hệ điều hành UNIX và tương tự
 - Khi RAM được sử dụng hết, swap space (swap file) sẽ được sử dụng để bổ sung vùng còn thiếu (bản chất là sử dụng dish làm RAM ảo, dùng nhiều hại máy)
 - Khi hệ thống cần thêm RAM để chứa data của các process, nhưng RAM được sử dụng hết, kernel của hệ điều hành sẽ di chuyển data không cần thiết hoặc ít được sử dụng vào swap space
+## Lưu ý
+- Khi thay đổi phiên bản kubernetes bạn muốn cài, hãy thay đổi version của kubectl và kubeadm cùng để tránh những xung đột phần mềm và bảo mật
