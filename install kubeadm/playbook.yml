@@ -19,12 +19,5 @@
 - name: Set hostname to all k8s hosts
   hosts: all
   become: true
-  vars:
-    host_vars_dir: "host_vars"
-  vars_files:
-    - "{{ host_vars_dir }}/192.168.1.21.yml"
-    - "{{ host_vars_dir }}/192.168.1.22.yml"
-    - "{{ host_vars_dir }}/192.168.1.23.yml"
-    - "{{ host_vars_dir }}/192.168.1.24.yml"
   roles:
     - set_hostname
