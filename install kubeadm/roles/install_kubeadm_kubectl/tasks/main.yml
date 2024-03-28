@@ -37,6 +37,7 @@
     state: latest
     autoclean: true
     autoremove: true
+  when: ansible_distribution == "Ubuntu"
 
 - name: Ensure /etc/apt/keyrings directory exists (Ubuntu)
   ansible.builtin.file:
