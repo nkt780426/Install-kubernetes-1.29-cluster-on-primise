@@ -48,7 +48,7 @@
 
 - name: Download the public signing key for the Kubernetes package repositories (Ubuntu)
   ansible.builtin.shell: >
-    curl -fsSL "https://pkgs.k8s.io/core:/stable:/v{{ Kubernetes_apt_keyring_version }}/deb/Release.key" |
+    curl -fsSL https://pkgs.k8s.io/core:/stable:/v{{ Kubernetes_apt_keyring_version }}/deb/Release.key |
     sudo gpg --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg
   when: ansible_distribution == "Ubuntu"
 
