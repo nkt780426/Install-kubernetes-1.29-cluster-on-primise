@@ -19,5 +19,10 @@
 - name: Set hostname to all k8s hosts
   hosts: all
   become: true
+  vars:
+    host_vars_dir: "host_vars"
+    host_vars_files: "{{ lookup('fileglob', host_vars_dir + '/*.yml') }}"
+  vars_files:
+    - "{{ host_vars_files }}"
   roles:
     - set_hostname

@@ -19,5 +19,6 @@
     path: /etc/hosts
     append_newline: true
     prepend_newline: true
-    block: "{{ lockup(ansible.builtin.file, k8s_host) }}"
+    backup: true
+    block: "{{ lockup('ansible.builtin.file', 'k8s_host') }}"
     marker: "# {mark} k8s_hosts block start/end"
