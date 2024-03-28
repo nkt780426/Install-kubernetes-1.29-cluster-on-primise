@@ -17,8 +17,6 @@
 - name: Add k8s_host block in /etc/hosts
   ansible.builtin.blockinfile:
     path: /etc/hosts
-    append_newline: true
-    prepend_newline: true
     backup: true
     block: "{{ lookup('ansible.builtin.file', 'k8s_host') }}"
     marker: "# {mark} k8s_hosts block start/end"
