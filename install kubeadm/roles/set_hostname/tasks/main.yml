@@ -1,7 +1,7 @@
 ---
 - name: Set hostname
   ansible.builtin.hostname:
-    name: "{{ hostname }}"
+    name: "{{ host_name }}"
 
 # Sử dụng copy để tạo/ghi đè 1 file
 # sử dụng lineinfile khi thay đổi theo dòng
