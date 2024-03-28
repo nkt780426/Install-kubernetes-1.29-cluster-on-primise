@@ -16,8 +16,14 @@
 #  roles:
 #    - install_containerd
 
-- name: Set hostname to all k8s hosts
+#- name: Set hostname to all k8s hosts
+#  hosts: all
+#  become: true
+#  roles:
+#    - set_hostname
+
+- name: Install kubeadm, kubectl on all k8s hosts
   hosts: all
   become: true
   roles:
-    - set_hostname
+    - install_kubeadm_kubectl 
