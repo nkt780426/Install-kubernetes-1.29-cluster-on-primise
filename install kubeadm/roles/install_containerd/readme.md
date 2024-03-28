@@ -25,6 +25,7 @@ Tóm lại, đây chỉ là thông tin đọc thêm hữu ích, chỉ cần foll
 # Mục đích role
 1.Cài containerd lên tất cả các host (có thể cải biến để cài các loại container runtime khác) phục vụ cho cài kubelet và kubeadm.
 2.Role chạy được trên Ubuntu và CentOS cùng lúc và các phiên bản Debian/Red Hat theo document chính thức của kubenetes
+3.Cài cni plugin
 # Nhược điểm:
 Có thể outdate khi các phiên bản mới hơn cập nhật (hiển nhiên). Giải pháp
 - Theo dõi trang web của [hãng](https://kubernetes.io/docs/setup/production-environment/container-runtimes/) và update lại version trong thư mục vas
