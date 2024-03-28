@@ -15,7 +15,7 @@
 - name: Download kubectl
   ansible.builtin.get_url:
     url: "https://dl.k8s.io/release/v{{ kubectl_version }}/bin/linux/amd64/kubectl"
-    dest: "{{ kubectl_download_dir }}/kubectl"
+    dest: "{{ kubectl_download_dir }}"
     checksum: "{{ kubectl_checksum }}"
 
 - name: Install kubectl binary
@@ -26,3 +26,6 @@
     owner: root
     group: root
     mode: '0755'
+
+# Install kubeadm bằng option 3 (không sử dụng package manager)
+# Cài cni plugin (đã cài ở role containerd)
