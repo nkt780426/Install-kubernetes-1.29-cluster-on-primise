@@ -1,12 +1,5 @@
 ---
 # Step 1: Installing containerd
-- name: Install package needed
-  ansible.builtin.package:
-    name:
-      - wget
-      - tar
-    state: present
-
 # Module get_url chỉ download file nếu dest đã tồn tại do force = false theo mặc định
 - name: Download containerd file
   ansible.builtin.get_url:
