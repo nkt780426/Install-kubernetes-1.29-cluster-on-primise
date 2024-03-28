@@ -47,15 +47,13 @@
   when: ansible_distribution == "Ubuntu"
 
 - name: Download the public signing key for the Kubernetes package repositories (Ubuntu)
-  ansible.builtin.shell: >
-    curl -fsSL https://pkgs.k8s.io/core:/stable:/v{{ Kubernetes_apt_keyring_version }}/deb/Release.key |
-    sudo gpg --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg
+  ansible.builtin.command: |
+    "curl -fsSL https://pkgs.k8s.io/core:/stable:/v{{ Kubernetes_apt_keyring_version }}/deb/Release.key | sudo gpg --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg"
   when: ansible_distribution == "Ubuntu"
 
 - name: Add the appropriate Kubernetes apt repository (Ubuntu)
-  ansible.builtin.shell: >
-    echo 'deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v{{ Kubernetes_apt_keyring_version }}/deb/ /' | 
-    sudo tee /etc/apt/sources.list.d/kubernetes.list
+  ansible.builtin.command: |
+    "echo 'deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v{{ Kubernetes_apt_keyring_version }}/deb/ /' | sudo tee /etc/apt/sources.list.d/kubernetes.list"
   when: ansible_distribution == "Ubuntu"
 
 - name: Update apt package and install kubectl (Ubuntu)
