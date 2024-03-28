@@ -19,10 +19,14 @@
 - name: Set hostname to all k8s hosts
   hosts: all
   become: true
-  vars:
-    host_vars_dir: "host_vars"
-    host_vars_files: "{{ lookup('fileglob', host_vars_dir + '/*.yml') }}"
-  vars_files:
-    - "{{ host_vars_files }}"
-  roles:
-    - set_hostname
+  tasks:
+  - name: Include host vars files
+    include_vars:
+      dir: host_vars
+      name: host_vars
+
+  - name: Run my_role
+    include_role:
+      name: set_hostname
+    vars:
+      host_vars: "{{ host_vars }}"
