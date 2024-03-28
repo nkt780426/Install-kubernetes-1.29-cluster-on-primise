@@ -1,16 +1,17 @@
 ---
 
-- hosts: all
+- name: Update repo cache before doing
+  hosts: all
   become: true
   pre_tasks:
 
-  - name: updates repo cache
-    tags: always
+  - tags: always
     package:
       update_cache: yes
     changed_when: false
 
-- hosts: all
+- name: Install containerd on all hosts
+  hosts: all
   become: true
   roles:
     - install_containerd
