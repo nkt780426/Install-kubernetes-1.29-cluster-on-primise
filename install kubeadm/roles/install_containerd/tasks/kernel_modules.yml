@@ -1,14 +1,6 @@
 ---
 # Forwarding IPv4 and letting iptables see bridged traffic
 # Module copy chỉ tạo file 1 lần do đó chạy nhiều lần playbook không ảnh hưởng
-- name: Install package needed
-  ansible.builtin.package:
-    name:
-      - wget
-      - tar
-      - source
-    state: present
-
 - name: Load required kernel modules
   ansible.builtin.copy:
     src: k8s_module.conf
