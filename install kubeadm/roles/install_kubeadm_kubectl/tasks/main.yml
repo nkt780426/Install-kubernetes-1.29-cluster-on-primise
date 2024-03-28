@@ -34,7 +34,7 @@
       - apt-transport-https
       - ca-certificates
       - curl
-    state: lastest
+    state: latest
     autoclean: true
     autoremove: true
 
