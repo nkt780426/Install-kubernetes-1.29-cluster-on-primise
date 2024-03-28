@@ -11,21 +11,76 @@
     line: "# {{ item }}"
   with_lines: cat /etc/fstab | grep swap
 
-# Install kubectl
-- name: Download kubectl
-  ansible.builtin.get_url:
-    url: "https://dl.k8s.io/release/v{{ kubectl_version }}/bin/linux/amd64/kubectl"
-    dest: "{{ kubectl_download_dir }}/kubectl"
-    checksum: "{{ kubectl_checksum }}"
+# Install kubectl (khồn dùng được option 1 của k8s chính thức)
+#- name: Download kubectl
+#  ansible.builtin.get_url:
+#    url: "https://dl.k8s.io/release/v{{ kubectl_version }}/bin/linux/amd64/kubectl"
+#    dest: "{{ kubectl_download_dir }}/kubectl"
+#    checksum: "{{ kubectl_checksum }}"
 
-- name: Install kubectl binary
-  ansible.builtin.copy:
-    src: "{{ kubectl_download_dir }}"
-    dest: "{{ kubectl_dir }}"
-    remote_src: true
-    owner: root
-    group: root
+#- name: Install kubectl binary
+#  ansible.builtin.copy:
+#    src: "{{ kubectl_download_dir }}"
+#    dest: "{{ kubectl_dir }}"
+#    remote_src: true
+#    owner: root
+#    group: root
+#    mode: '0755'
+
+# Install kubectl (option 2)
+- name: Install requirement package for Ubuntu
+  ansible.builtin.apt:
+    name:
+      - apt-transport-https
+      - ca-certificates
+      - curl
+    state: lastest
+    autoclean: true
+    autoremove: true
+
+- name: Ensure /etc/apt/keyrings directory exists (Ubuntu)
+  ansible.builtin.file:
+    path: /etc/apt/keyrings
+    state: directory
     mode: '0755'
+  when: ansible_distribution == "Ubuntu"
 
+- name: Download the public signing key for the Kubernetes package repositories (Ubuntu)
+  ansible.builtin.shell: >
+    curl -fsSL "https://pkgs.k8s.io/core:/stable:/v{{ Kubernetes_apt_keyring_version }}/deb/Release.key" |
+    sudo gpg --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg
+  when: ansible_distribution == "Ubuntu"
+
+- name: Add the appropriate Kubernetes apt repository (Ubuntu)
+  ansible.builtin.shell: >
+    echo 'deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v{{ Kubernetes_apt_keyring_version }}/deb/ /' | 
+    sudo tee /etc/apt/sources.list.d/kubernetes.list
+  when: ansible_distribution == "Ubuntu"
+
+- name: Update apt package and install kubectl (Ubuntu)
+  ansible.builtin.apt:
+    update_cache: true
+    name: kubectl
+  when: ansible_distribution == "Ubuntu"
+
+- name: Add the Kubernetes yum repository (CentOS)
+  ansible.builtin.shell: >
+    cat <<EOF | sudo tee /etc/yum.repos.d/kubernetes.repo
+    [kubernetes]
+    name=Kubernetes
+    baseurl=https://pkgs.k8s.io/core:/stable:/v{{ kubectl_version }}/rpm/
+    enabled=1
+    gpgcheck=1
+    gpgkey=https://pkgs.k8s.io/core:/stable:/v{{ kubectl_version }}/rpm/repodata/repomd.xml.key
+    EOF
+  when: ansible_distribution == "CentOS"
+
+- name: Install kubectl using yum (CentOS)
+  ansible.builtin.package:
+    name: kubectl
+    state: present
+    update_cache: yes
+  when: ansible_distribution == "CentOS"
+  
 # Install kubeadm bằng option 3 (không sử dụng package manager)
 # Cài cni plugin (đã cài ở role containerd)
