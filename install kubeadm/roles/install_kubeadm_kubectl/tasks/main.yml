@@ -76,10 +76,8 @@
   when: ansible_distribution == "CentOS"
 
 - name: Install kubectl using yum (CentOS)
-  ansible.builtin.package:
-    name: kubectl
-    state: present
-    use: yum
+  ansible.builtin.command:
+    cmd: "sudo yum install -y kubectl"
   when: ansible_distribution == "CentOS"
   
 # Install kubeadm bằng option 3 (không sử dụng package manager)
