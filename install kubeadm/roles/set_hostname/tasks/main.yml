@@ -1,0 +1,23 @@
+---
+- name: Set hostname
+  ansible.builtin.hostname:
+    name: "{{ hostname }}"
+
+# Sử dụng copy để tạo/ghi đè 1 file
+# sử dụng lineinfile khi thay đổi theo dòng
+# Sử dụng blockinfile thay vì lineinfile trong trường hợp này (nếu chạy nhiều làn thì nó sẽ không tự thêm nếu tìm thấy)
+# Các thuộc tính quan trọng
+  # append_newline+prepend_newline: thêm dòng trống vào đầu/cuối block trước khi trền (default=false)
+  # path: nơi chứa tệp
+  # create: tạo tệp nếu path không tồn tại
+  # group + owner:
+  # marker: là đoạn block để ghi đè vào file từ vị trí marker_begin đến marker_end
+  # marker_begin + marker_end: đánh dấu nơi chèn block. Mặc định là BEGIN và END tức ghi đè toàn bộ file bằng block
+  # insertbefore + insertafter: được sử dụng khi marker line không được tìm thấy. Default sẽ là insertafter EOF
+- name: Add k8s_host block in /etc/hosts
+  ansible.builtin.blockinfile:
+    path: /etc/hosts
+    append_newline: true
+    prepend_newline: true
+    block: "{{ lockup(ansible.builtin.file, k8s_host) }}"
+    marker: "# {mark} k8s_hosts block start/end"

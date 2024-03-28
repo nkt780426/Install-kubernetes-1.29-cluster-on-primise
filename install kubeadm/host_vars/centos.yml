@@ -1,4 +1,0 @@
-apt_transport_https_package: dnf-plugins-core
-gpg_package: gnupg2
-
-host_name: k8s-master.htp.local

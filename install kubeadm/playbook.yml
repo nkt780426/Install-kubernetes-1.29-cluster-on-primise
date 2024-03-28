@@ -10,8 +10,14 @@
       update_cache: yes
     changed_when: false
 
-- name: Install containerd on all hosts
+#- name: Install containerd on all hosts
+#  hosts: all
+#  become: true
+#  roles:
+#    - install_containerd
+
+- name: Set hostname to all k8s hosts
   hosts: all
   become: true
   roles:
-    - install_containerd
+    - set_hostname
