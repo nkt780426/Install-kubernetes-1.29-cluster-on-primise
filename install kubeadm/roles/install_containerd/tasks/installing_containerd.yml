@@ -50,6 +50,9 @@
     regexp: '^PATH='
   notify: Source /etc/environment
 
+- name: Flush handlers 3
+  ansible.builtin.meta: flush_handlers
+
 - name: Reload systemd daemon
   systemd:
     daemon_reload: true

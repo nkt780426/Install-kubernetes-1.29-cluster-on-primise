@@ -10,6 +10,9 @@
     mode: '0644'
   notify: Load Kernel Modules
 
+- name: Flush handlers 1
+  ansible.builtin.meta: flush_handlers
+
 - name: Apply sysctl settings
   ansible.builtin.copy:
     src: k8s_systemd.conf
@@ -18,3 +21,6 @@
     group: root
     mode: '0644'
   notify: Apply Sysctl Settings
+
+- name: Flush handlers 2
+  ansible.builtin.meta: flush_handlers
