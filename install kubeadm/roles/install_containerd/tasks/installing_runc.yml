@@ -1,0 +1,16 @@
+---
+# Step 2: Installing runc
+- name: Download runc file
+  ansible.builtin.get_url:
+    url: "https://github.com/opencontainers/runc/releases/download/v{{ runc_version }}/runc.{{ runc_arch }}"
+    dest: "{{ runc_download_dir }}/run.c.{{ containerd_arch }}"  
+    checksum: "{{ runc_checksum }}"
+
+- name: Copy runc.amd64 to "{{ runc_dir }}"
+  ansible.builtin.copy:
+    src: "{{ runc_download_dir }}/run.c.{{ containerd_arch }}"
+    dest: "{{ runc_dir }}"
+    owner: root
+    group: root
+    mode: "0755"
+    remote_src: true

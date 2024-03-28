@@ -1,0 +1,50 @@
+---
+# Step 3: Installing CNI plugins
+- name: Download CNI plugin
+  ansible.builtin.get_url:
+    url: "https://github.com/containernetworking/plugins/releases/download/v{{ cni_version }}/cni-plugins-{{ cni_os }}-{{ cni_arch }}-v{{ cni_version }}.tgz" 
+    dest: "{{ cni_download_dir }}/cni-plugins-{{ cni_os }}-{{ cni_arch }}-v{{ cni_version }}.tgz"
+    checksum: "{{ cni_checksum }}"
+
+- name: Ensure "{{ cni_dir }} directory exit
+  ansible.builtin.file:
+    path: "{{ cni_dir }}"
+    state: directory
+    owner: root
+    group: root
+    mode: '0644'
+
+- name: Extract "cni-plugins-{{ cni_os }}-{{ cni_arch }}-v{{ cni_version }}.tgz" to {{ cni_dir }}
+  ansible.builtin.command:
+    cmd: "tar Cxzvf {{ cni_dir }} cni-plugins-{{ cni_os }}-{{ cni_arch }}-v{{ cni_version }}.tgz"
+    chdir: "{{cni_download_dir }}"
+    creates: "{{ cni_dir }}/static"
+
+# Create /etc/containerd/config.toml file
+- name: Check if /etc/containerd/config.toml exists
+  ansible.builtin.stat:
+    path: /etc/containerd/config.toml
+  register: config_file
+
+- name: Create "/etc/containerd" directory if it doesn't exist
+  ansible.builtin.file:
+    path: /etc/containerd
+    state: directory
+    owner: root
+    group: root
+    mode: '0644'
+  when: not config_file.stat.exists
+
+- name: Generated default config "/etc/containerd/config.toml"
+  ansible.builtin.shell: |
+    containerd config default > /etc/containerd/config.toml
+  when: not config_file.stat.exists
+
+- name: Copy containerd systemd configuration file to /etc/containerd/config.toml
+  ansible.builtin.copy:
+    src: config.toml
+    dest: /etc/containerd/config.toml
+    owner: root
+    group: root
+    mode: '0644'
+  notify: Reload containerd
