@@ -1,2 +1,12 @@
 ---
-# tasks file for install_kubeadm
+# Disable swap config
+- name: disable swap config now on all hosts
+  ansible.builtin.command:
+    cmd: "swapoff -a"
+
+- name: Comment out swap entry in /etc/fstab
+  ansible.builtin.lineinfile:
+    path: /etc/fstab
+    regexp: '^.*swap.*'
+    line: "# {{ item }}"
+  with_lines: cat /etc/fstab | grep swap
