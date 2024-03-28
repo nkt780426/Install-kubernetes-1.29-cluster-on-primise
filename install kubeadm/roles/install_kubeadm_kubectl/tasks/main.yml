@@ -10,7 +10,7 @@
     regexp: '^.*swap.*'
     line: "# {{ item }}"
   with_lines: cat /etc/fstab | grep swap
-  
+
 # Install kubectl
 - name: Download kubectl
   ansible.builtin.get_url:
@@ -20,7 +20,7 @@
 
 - name: Install kubectl binary
   ansible.builtin.copy:
-    src: /tmp
+    src: "{{ kubectl_download_dir }}"
     dest: "{{ kubectl_dir }}"
     remote_src: true
     owner: root
