@@ -36,10 +36,28 @@
     dest: "{{ download_dir }}/kubeadm"
     mode: '0755'
 
+- name: Install kubeadm binary
+  ansible.builtin.copy:
+    src: "{{ download_dir }}/kubeadm"
+    dest: "{{ kubeadm_dir }}"
+    remote_src: true
+    owner: root
+    group: root
+    mode: '0755'
+
 - name: Download kubelet
   get_url:
     url: "https://dl.k8s.io/release/v{{ kubernetes_version }}/bin/linux/{{ host_arch }}/kubelet"
     dest: "{{ download_dir }}/kubelet"
+    mode: '0755'
+
+- name: Install kubelet binary
+  ansible.builtin.copy:
+    src: "{{ download_dir }}/kubelet"
+    dest: "{{ kubelet_dir }}"
+    remote_src: true
+    owner: root
+    group: root
     mode: '0755'
 
 - name: Add kubelet file as systemd service
