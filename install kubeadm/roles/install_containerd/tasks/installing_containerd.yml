@@ -33,6 +33,8 @@
     mode: '0644'
 
 # Do là file nhị phân nên mode là 0755
+# Thư mục "/usr/lib/systemd/system/" là vị trí chuẩn cho các service thuộc systemd quản lý và được cài đặt bởi các phần mềm hệ thống hoặc package manager như apt/dnf/yum/snapd/...
+# Thư mục "/usr/local/lib/systemd/system/" thường được sử dụng cho các service được cài đặt bởi người dùng, được cài đặt từ nguồn không chính thống
 - name: Download containerd.service file to start systemd cgroup driver
   ansible.builtin.get_url:
     url: "https://raw.githubusercontent.com/containerd/containerd/main/containerd.service"
