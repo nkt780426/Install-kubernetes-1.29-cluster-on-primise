@@ -32,13 +32,13 @@
 # cài ctictl (đã cài containerd rồi thì không cần)
 - name: Download kubeadm
   get_url:
-    url: "https://dl.k8s.io/release/{{ kubernetes_version }}/bin/linux/{{ host_arch }}/kubeadm"
+    url: "https://dl.k8s.io/release/v{{ kubernetes_version }}/bin/linux/{{ host_arch }}/kubeadm"
     dest: "{{ download_dir }}/kubeadm"
     mode: '0755'
 
 - name: Download kubelet
   get_url:
-    url: "https://dl.k8s.io/release/{{ kubernetes_version }}/bin/linux/{{ host_arch }}/kubelet"
+    url: "https://dl.k8s.io/release/v{{ kubernetes_version }}/bin/linux/{{ host_arch }}/kubelet"
     dest: "{{ download_dir }}/kubelet"
     mode: '0755'
 
