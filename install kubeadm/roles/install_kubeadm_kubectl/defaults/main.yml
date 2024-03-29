@@ -1,2 +1,12 @@
 ---
-# defaults file for install_kubeadm
+kubernetes_version: 1.29.3
+
+download_dir: /tmp
+kubectl_dir: /usr/local/bin/kubectl
+kubectl_checksum: sha256:89c0435cec75278f84b62b848b8c0d3e15897d6947b6c59a49ddccd93d7312bf
+
+host_arch: amd64
+
+kubelet_kubeadm_version: 0.16.2
+kubelet_dir: /usr/local/bin/kubectl
+kubeadm_dir: /usr/local/bin/kubeadm

@@ -1,26 +1,26 @@
 ---
 
-#- name: Update repo cache before doing
-#  hosts: all
-#  become: true
-#  pre_tasks:
-#
-#  - tags: always
-#    package:
-#      update_cache: yes
-#    changed_when: false
+- name: Update repo cache before doing
+  hosts: all
+  become: true
+  pre_tasks:
 
-#- name: Install containerd on all hosts
-#  hosts: all
-#  become: true
-#  roles:
-#    - install_containerd
+  - tags: always
+    package:
+      update_cache: yes
+    changed_when: false
 
-#- name: Set hostname to all k8s hosts
-#  hosts: all
-#  become: true
-#  roles:
-#    - set_hostname
+- name: Install containerd on all hosts
+  hosts: all
+  become: true
+  roles:
+    - install_containerd
+
+- name: Set hostname to all k8s hosts
+  hosts: all
+  become: true
+  roles:
+    - set_hostname
 
 - name: Install kubeadm, kubectl on all k8s hosts
   hosts: all
