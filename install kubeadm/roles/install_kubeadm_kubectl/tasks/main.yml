@@ -69,6 +69,7 @@
 - name: Ensure "/usr/lib/systemd/system/kubelet.service.d" directory exits
   file:
     path: /usr/lib/systemd/system/kubelet.service.d
+    state: directory
     mode: '0644'
 
 - name: Add kubeadm config file to kubelet service
