@@ -20,7 +20,7 @@
 
 - name: Install kubectl binary
   ansible.builtin.copy:
-    src: "{{ kubectl_download_dir }}"
+    src: "{{ kubectl_download_dir }}/kubectl"
     dest: "{{ kubectl_dir }}"
     remote_src: true
     owner: root
