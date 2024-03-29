@@ -13,3 +13,10 @@ https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/install-ku
 - Khi hệ thống cần thêm RAM để chứa data của các process, nhưng RAM được sử dụng hết, kernel của hệ điều hành sẽ di chuyển data không cần thiết hoặc ít được sử dụng vào swap space
 ## Lưu ý
 - Khi thay đổi phiên bản kubernetes bạn muốn cài, hãy thay đổi version của kubectl và kubeadm cùng để tránh những xung đột phần mềm và bảo mật
+# Sửa role
+Role mặc định cài kubectl, kubeadm, kubelet ứng với phiên bản kubernetes 1.29 lên các host. Nếu muốn cài phiên bản mới nhất
+- Chạy lệnh sau để tìm phiên bản mới nhất của kubernetes và thay vào biến kubernetes_version
+```bash
+curl -sSL https://dl.k8s.io/release/stable.txt
+```
+- Tìm trong [document mới nhất](https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/install-kubeadm/) của k8s đoạn "Installing kubeadm, kubelet and kubectl" => Install bằng "Without a package manager" => Install kubeadm, kubelet and add a kubelet systemd service
