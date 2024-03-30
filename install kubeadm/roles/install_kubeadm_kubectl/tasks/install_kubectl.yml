@@ -1,0 +1,16 @@
+---
+# Install kubectl
+- name: Download kubectl
+  ansible.builtin.get_url:
+    url: "https://dl.k8s.io/release/v{{ kubernetes_version }}/bin/linux/amd64/kubectl"
+    dest: "{{ download_dir }}/kubectl"
+    checksum: "{{ kubectl_checksum }}"
+
+- name: Install kubectl binary
+  ansible.builtin.copy:
+    src: "{{ download_dir }}/kubectl"
+    dest: "{{ kubectl_dir }}"
+    remote_src: true
+    owner: root
+    group: root
+    mode: '0755'

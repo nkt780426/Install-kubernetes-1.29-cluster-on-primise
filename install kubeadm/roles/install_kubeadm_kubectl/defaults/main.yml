@@ -7,6 +7,9 @@ kubectl_checksum: sha256:89c0435cec75278f84b62b848b8c0d3e15897d6947b6c59a49ddccd
 
 host_arch: amd64
 
+crictl_version: 1.28.0
+crictl_dir: /usr/local/bin
+
 kubelet_kubeadm_version: 0.16.2
 kubelet_dir: /usr/local/bin/kubelet
 kubeadm_dir: /usr/local/bin/kubeadm
