@@ -4,4 +4,4 @@
     name:
       - socat
       - conntrack
-    state: lastest
+    state: latest
