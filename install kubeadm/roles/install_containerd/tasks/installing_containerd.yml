@@ -44,6 +44,7 @@
 - name: Check if /usr/local/bin is in PATH
   ansible.builtin.shell:
     cmd: grep -q "/usr/local/bin" /etc/environment
+  ignore_errors: true
   register: path_check
 
 # Sử dụng module lineinfile để thao tác với nội dung của file
