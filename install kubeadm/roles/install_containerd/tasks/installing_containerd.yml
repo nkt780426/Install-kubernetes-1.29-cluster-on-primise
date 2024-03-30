@@ -47,7 +47,7 @@
   register: path_check
 
 # Sử dụng module lineinfile để thao tác với nội dung của file
-- name: Ensure /usr/local/bin is in PATH in /etc/environment
+- name: Add /usr/local/bin is in PATH in /etc/environment
   ansible.builtin.lineinfile:
     path: /etc/environment
     line: 'export PATH=$PATH:/usr/local/bin'

@@ -1,0 +1,68 @@
+---
+# Install kubeadm, kubectl bằng option 3 (không sử dụng package manager)
+# Cài cni plugin (đã cài ở role containerd)
+- name: Download crictl
+  ansible.builtin.get_url:
+    url: "https://github.com/kubernetes-sigs/cri-tools/releases/download/v{{ crictl_version }}/crictl-v{{ crictl_version }}-linux-{{ host_arch }}.tar.gz"
+    dest: "{{ download_dir }}/crictl-v{{ crictl_version }}-linux-{{ host_arch }}.tar.gz"
+
+- name: Install crictl
+  ansible.builtin.archive:
+    src: "{{ download_dir }}/crictl-v{{ crictl_version }}-linux-{{ host_arch }}.tar.gz"
+    chdir: "{{ download_dir }}"
+    remote_src: true
+    # khi chạy playbook thứ 2 nó sẽ thực hiện lại thao tác giải nén, càn chỉ định nó nếu tệp đã tồn tại thì không cần giải nén nữa
+    creates: "{{ crictl_dir }}/crictl"
+
+- name: Download kubeadm
+  get_url:
+    url: "https://dl.k8s.io/release/v{{ kubernetes_version }}/bin/linux/{{ host_arch }}/kubeadm"
+    dest: "{{ download_dir }}/kubeadm"
+    mode: '0755'
+
+- name: Install kubeadm binary
+  ansible.builtin.copy:
+    src: "{{ download_dir }}/kubeadm"
+    dest: "{{ kubeadm_dir }}"
+    remote_src: true
+    owner: root
+    group: root
+    mode: '0755'
+
+- name: Download kubelet
+  get_url:
+    url: "https://dl.k8s.io/release/v{{ kubernetes_version }}/bin/linux/{{ host_arch }}/kubelet"
+    dest: "{{ download_dir }}/kubelet"
+    mode: '0755'
+
+- name: Install kubelet binary
+  ansible.builtin.copy:
+    src: "{{ download_dir }}/kubelet"
+    dest: "{{ kubelet_dir }}"
+    remote_src: true
+    owner: root
+    group: root
+    mode: '0755'
+
+- name: Add kubelet file as systemd service
+  ansible.builtin.get_url:
+    url: "https://raw.githubusercontent.com/kubernetes/release/v{{ kubelet_kubeadm_version }}/cmd/krel/templates/latest/kubelet/kubelet.service"
+    dest: /usr/lib/systemd/system/kubelet.service
+
+# kubelet.service.d có ý nghĩa là thư mục con của systemd, chứa các config sử dụng cho kubelet. Cụ thể nó cung cấp các config để kubelet có thể sử dụng được kubeadm
+- name: Ensure "/usr/lib/systemd/system/kubelet.service.d" directory exits
+  file:
+    path: /usr/lib/systemd/system/kubelet.service.d
+    state: directory
+    mode: '0644'
+
+- name: Add kubeadm config file to kubelet service
+  ansible.builtin.get_url:
+    url: "https://raw.githubusercontent.com/kubernetes/release/v{{ kubelet_kubeadm_version }}/cmd/krel/templates/latest/kubeadm/10-kubeadm.conf"
+    dest: /usr/lib/systemd/system/kubelet.service.d/10-kubeadm.conf
+
+# Enabled kubelet
+- name: Enable kubelet service before runing kubeadm
+  service:
+    name: kubelet
+    enabled: true
