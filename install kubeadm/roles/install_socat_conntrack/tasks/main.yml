@@ -1,0 +1,7 @@
+---
+- name: Install conntrack and socat
+  ansible.builtin.package:
+    name:
+      - socat
+      - conntrack
+    state: lastest

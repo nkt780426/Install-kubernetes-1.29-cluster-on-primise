@@ -27,3 +27,8 @@
   become: true
   roles:
     - install_kubeadm_kubectl 
+- name: Install_socat_conntrack
+  hosts: all
+  become: true
+  roles:
+    - install_socat_conntrack
