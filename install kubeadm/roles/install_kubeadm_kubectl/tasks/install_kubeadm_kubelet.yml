@@ -7,7 +7,7 @@
     dest: "{{ download_dir }}/crictl-v{{ crictl_version }}-linux-{{ host_arch }}.tar.gz"
 
 - name: Install crictl
-  ansible.builtin.archive:
+  ansible.builtin.unarchive:
     src: "{{ download_dir }}/crictl-v{{ crictl_version }}-linux-{{ host_arch }}.tar.gz"
     chdir: "{{ download_dir }}"
     remote_src: true
