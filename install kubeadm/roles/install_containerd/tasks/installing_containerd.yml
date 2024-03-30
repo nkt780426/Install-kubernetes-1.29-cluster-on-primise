@@ -41,28 +41,6 @@
     dest: "/usr/local/lib/systemd/system/containerd.service"
     mode: '0755'
 
-- name: Check if /usr/local/bin is in PATH
-  ansible.builtin.shell:
-    cmd: grep -q "/usr/local/bin" /etc/environment
-  ignore_errors: true
-  register: path_check
-
-# Sử dụng module lineinfile để thao tác với nội dung của file
-- name: Add /usr/local/bin is in PATH in /etc/environment
-  ansible.builtin.lineinfile:
-    path: /etc/environment
-    line: 'export PATH=$PATH:/usr/local/bin'
-    insertafter: EOF
-    # regexp luôn được kết hợp với insertbefore/insertafter/state=present(default)
-    # Nếu không tìm thấy sẽ dựa vào insertbefore/insertafter để xác định thêm vào đầu hay cuối tệp, nếu thấy thì không sử dụng kết quả trường này
-    # Theo mặc định insertafter được set thay vì insertbefore nên nếu không tìm thấy line được thêm vào cuois tệp
-    # regexp: '^PATH=' (không dùng trong task này)
-    state: present
-  when: not path_check.rc  # Chỉ thêm dòng nếu /usr/local/bin chưa tồn tại trong PATH
-
-- name: Flush handlers 3
-  ansible.builtin.meta: flush_handlers
-
 - name: Reload systemd daemon
   systemd:
     daemon_reload: true

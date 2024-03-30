@@ -16,8 +16,9 @@
 
 - name: Extract "cni-plugins-{{ cni_os }}-{{ cni_arch }}-v{{ cni_version }}.tgz" to {{ cni_dir }}
   ansible.builtin.command:
-    cmd: "tar Cxzvf {{ cni_dir }} cni-plugins-{{ cni_os }}-{{ cni_arch }}-v{{ cni_version }}.tgz"
-    chdir: "{{cni_download_dir }}"
+    src: "{{cni_download_dir }}/cni-plugins-{{ cni_os }}-{{ cni_arch }}-v{{ cni_version }}.tgz"
+    dest: "{{ cni_dir }}"
+    remote_src: true
     creates: "{{ cni_dir }}/static"
 
 # Create /etc/containerd/config.toml file
