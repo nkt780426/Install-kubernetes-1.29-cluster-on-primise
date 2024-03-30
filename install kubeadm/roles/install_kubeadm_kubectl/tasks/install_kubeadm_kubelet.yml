@@ -9,7 +9,7 @@
 - name: Install crictl
   ansible.builtin.unarchive:
     src: "{{ download_dir }}/crictl-v{{ crictl_version }}-linux-{{ host_arch }}.tar.gz"
-    chdir: "{{ download_dir }}"
+    dest: "{{ crictl_dir }}"
     remote_src: true
     # khi chạy playbook thứ 2 nó sẽ thực hiện lại thao tác giải nén, càn chỉ định nó nếu tệp đã tồn tại thì không cần giải nén nữa
     creates: "{{ crictl_dir }}/crictl"
