@@ -8,10 +8,6 @@
 - name: Apply Sysctl Settings
   command: sysctl --system
 
-- name: Source /etc/environment
-  ansible.builtin.command:
-    cmd: "source /etc/environment"
-
 - name: Reload containerd
   ansible.builtin.service:
     name: containerd

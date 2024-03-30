@@ -58,7 +58,6 @@
     # regexp: '^PATH=' (không dùng trong task này)
     state: present
   when: not path_check.rc  # Chỉ thêm dòng nếu /usr/local/bin chưa tồn tại trong PATH
-  notify: Source /etc/environment
 
 - name: Flush handlers 3
   ansible.builtin.meta: flush_handlers
