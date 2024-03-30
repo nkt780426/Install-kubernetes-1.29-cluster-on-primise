@@ -48,9 +48,9 @@ private_key="${public_key%.pub}"
 # Tạo alias mới
 new_alias="alias ssha='eval \$(ssh-agent) && ssh-add $private_key'"
 
-# Kiểm tra xem alias đã tồn tại trong .bashrc chưa
-if ! grep -q "$new_alias" "$bashrc_file"; then
-    # Nếu alias chưa tồn tại, thêm nó vào .bashrc
+# Kiểm tra xem alias đã tồn tại trong bashrc hay không
+if ! grep -q "alias ssha=" "$bashrc_file"; then
+    # Nếu alias chưa tồn tại, thêm nó vào bashrc
     echo "# Adding alias to .bashrc"
     echo "$new_alias" >> "$bashrc_file"
     echo "Alias 'ssha' has been added to .bashrc"
