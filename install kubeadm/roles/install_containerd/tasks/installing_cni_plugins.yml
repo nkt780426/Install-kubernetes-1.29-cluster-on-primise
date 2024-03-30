@@ -15,7 +15,7 @@
     mode: '0644'
 
 - name: Extract "cni-plugins-{{ cni_os }}-{{ cni_arch }}-v{{ cni_version }}.tgz" to {{ cni_dir }}
-  ansible.builtin.command:
+  ansible.builtin.unarchive:
     src: "{{cni_download_dir }}/cni-plugins-{{ cni_os }}-{{ cni_arch }}-v{{ cni_version }}.tgz"
     dest: "{{ cni_dir }}"
     remote_src: true
