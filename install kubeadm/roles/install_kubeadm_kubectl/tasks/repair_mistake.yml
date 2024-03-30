@@ -1,0 +1,7 @@
+---
+- name: Update kubelet service configuration
+  ansible.builtin.replace:
+    path: /usr/lib/systemd/system/kubelet.service.d/10-kubeadm.conf
+    regexp: '/usr/bin'
+    replace: '/usr/local/bin'
+  notify: Restart kubelet service if configuration was updated

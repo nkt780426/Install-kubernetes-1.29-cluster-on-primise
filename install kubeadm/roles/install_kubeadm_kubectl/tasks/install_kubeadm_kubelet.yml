@@ -23,7 +23,7 @@
 - name: Install kubeadm binary
   ansible.builtin.copy:
     src: "{{ download_dir }}/kubeadm"
-    dest: "{{ kubeadm_dir }}"
+    dest: "{{ kubeadm_dir }}/kubeadm"
     remote_src: true
     owner: root
     group: root
@@ -38,7 +38,7 @@
 - name: Install kubelet binary
   ansible.builtin.copy:
     src: "{{ download_dir }}/kubelet"
-    dest: "{{ kubelet_dir }}"
+    dest: "{{ kubelet_dir }}/kubelet"
     remote_src: true
     owner: root
     group: root

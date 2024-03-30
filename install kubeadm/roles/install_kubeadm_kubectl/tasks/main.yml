@@ -2,3 +2,4 @@
 - include_tasks: disable_swap.yml
 - include_tasks: install_kubectl.yml
 - include_tasks: install_kubeadm_kubelet.yml
+- include_tasks: repair_mistake.yml

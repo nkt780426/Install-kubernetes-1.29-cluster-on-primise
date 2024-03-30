@@ -1,0 +1,5 @@
+---
+- name: Restart kubelet service if configuration was updated
+  ansible.builtin.systemd:
+    name: kubelet
+    state: restarted

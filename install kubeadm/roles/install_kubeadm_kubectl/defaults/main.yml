@@ -11,5 +11,5 @@ crictl_version: 1.28.0
 crictl_dir: /usr/local/bin
 
 kubelet_kubeadm_version: 0.16.2
-kubelet_dir: /usr/local/bin/kubelet
-kubeadm_dir: /usr/local/bin/kubeadm
+kubelet_dir: /usr/local/bin
+kubeadm_dir: /usr/local/bin

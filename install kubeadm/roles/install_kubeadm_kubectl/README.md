@@ -20,3 +20,9 @@ Role mặc định cài kubectl, kubeadm, kubelet ứng với phiên bản kuber
 curl -sSL https://dl.k8s.io/release/stable.txt
 ```
 - Tìm trong [document mới nhất](https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/install-kubeadm/) của k8s đoạn "Installing kubeadm, kubelet and kubectl" => Install bằng "Without a package manager" => Install kubeadm, kubelet and add a kubelet systemd service
+# Lỗi nghiêm trọng
+Trong document về cài đặt kubeadm và kubelet [chính thức](https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/install-kubeadm/#before-you-begin), tệp thực thi kubeadm và kubelet được đặt ở thư mục /usr/local/bin. Tuy nhiên trong file 10-kubeadm.conf mà tài liệu bắt down về có đoạn
+```bash
+ExecStart=/usr/bin/kubelet $KUBELET_KUBECONFIG_ARGS $KUBELET_CONFIG_ARGS $KUBELET_KUBEADM_ARGS 
+```
+Do đó cần sửa file đoạn này thành /usr/local/bin thì kubelet service mới hoạt động đúng cách, file repair_mistake sẽ làm điều này (lưu ý điều này chỉ đúng đến 30/3/2024), cần kiểm tra lại lỗi này và bỏ file trên trong tương lai nếu k8s sửa lỗi này
